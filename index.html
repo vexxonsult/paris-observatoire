@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111619">
+  <meta name="description" content="Rejouer la journée du 17 octobre 2026 à Paris : une carte 3D, des événements horodatés et leurs sources.">
+  <title>PARIS / OBSERVATOIRE — 17 octobre 2026</title>
+  <link rel="preconnect" href="https://tiles.openfreemap.org">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://unpkg.com/maplibre-gl@5.6.1/dist/maplibre-gl.js" defer></script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="./" aria-label="Paris Observatoire, accueil"><span class="brand-symbol">P<span></span></span><span>PARIS<span class="brand-sub">OBSERVATOIRE</span></span></a>
+    <div class="edition"><span class="live-dot"></span><span>17 OCTOBRE 2026</span><span class="edition-divider">/</span><span class="muted">PARIS & ÎLE-DE-FRANCE</span></div>
+    <div class="header-right"><span class="snapshot-label">DOSSIER DOCUMENTÉ <b>18:26</b></span><button class="icon-button" id="method-button" aria-label="Sources et méthode" title="Sources et méthode">ⓘ</button></div>
+  </header>
+  <main class="workspace">
+    <aside class="sidebar" aria-label="Événements de la journée">
+      <div class="sidebar-intro"><p class="eyebrow">ÉDITION SPÉCIALE <span>01 / IDF</span></p><h1>Une journée<br>de mobilisation<span>.</span></h1><p class="intro-text">Les lieux, les faits, leur chronologie.<br>Du premier signalement au dernier récit.</p></div>
+      <div class="tabs" role="tablist" aria-label="Panneau latéral"><button role="tab" id="events-tab" aria-selected="true" aria-controls="events-panel">Chronologie <span id="total-badge">10</span></button><button role="tab" id="sources-tab" aria-selected="false" aria-controls="sources-panel">Sources <span>5</span></button></div>
+      <section id="events-panel" role="tabpanel" aria-labelledby="events-tab">
+        <div class="filters"><label class="search"><span>⌕</span><input id="search" type="search" placeholder="Chercher un lieu, un événement…" aria-label="Chercher dans les événements"></label><div class="filter-chips" aria-label="Catégories"><button data-filter="rassemblement" class="chip active" aria-pressed="true"><i class="dot green"></i>Cortèges</button><button data-filter="incendie" class="chip active" aria-pressed="true"><i class="dot orange"></i>Incendies</button><button data-filter="incident" class="chip active" aria-pressed="true"><i class="dot red"></i>Incidents</button><button data-filter="blocage" class="chip active" aria-pressed="true"><i class="dot blue"></i>Blocages</button><button data-filter="annonce" class="chip active" aria-pressed="true"><i class="dot yellow"></i>Annonces</button></div><div class="list-caption"><span id="list-count">10 ÉVÉNEMENTS DOCUMENTÉS</span><span>HEURE DE PARIS</span></div></div>
+        <div class="event-list" id="event-list"></div>
+      </section>
+      <section id="sources-panel" role="tabpanel" aria-labelledby="sources-tab" hidden><div id="source-list"></div></section>
+      <div class="sidebar-footer"><span class="status-dot"></span><span id="collection-label">Collecte du 17/10 · 18:46</span><button id="export-button" title="Télécharger les événements et leurs sources" aria-label="Exporter le dossier JSON">↓</button></div>
+    </aside>
+    <section class="map-section" aria-label="Carte interactive de Paris et de l’Île-de-France">
+      <div id="map"></div><canvas id="atmosphere" aria-hidden="true"></canvas><div class="map-vignette" aria-hidden="true"></div>
+      <div id="map-loading" class="map-message"><span class="spinner"></span>Chargement de la carte de Paris…</div>
+      <div class="map-top"><div class="view-switch" aria-label="Étendue de la carte"><button class="active" id="paris-view">Paris</button><button id="idf-view">Île-de-France</button></div><div class="map-context"><span class="status-dot"></span><span id="replay-label">RELECTURE · 18:26</span></div></div>
+      <div class="map-heading"><span class="eyebrow">48°51′ N &nbsp; 2°21′ E</span><h2>Paris<span>,</span><br><span class="outline">17 octobre.</span></h2><p>Une lecture géographique de la journée</p></div>
+      <div class="map-stats" aria-label="Bilan du dossier à l’heure choisie"><div><b id="stat-events">10</b><span>faits & annonces</span></div><div><b id="stat-fires">03</b><span>signalements de feu</span></div><div><b id="stat-sources">05</b><span>sources utilisées</span></div></div>
+      <div class="map-controls"><button id="zoom-in" aria-label="Zoom avant" title="Zoom avant">+</button><button id="zoom-out" aria-label="Zoom arrière" title="Zoom arrière">−</button><span></span><button id="pitch-button" class="active" aria-label="Basculer la vue 2D ou 3D" aria-pressed="true">3D</button><button id="rotate-button" aria-label="Tourner la carte de 45 degrés" title="Tourner de 45°">↻</button><button id="north-button" aria-label="Orienter la carte vers le nord" title="Nord en haut">N<span>↑</span></button></div>
+      <div class="map-bottom-left"><div class="map-legend"><span><i class="dot green"></i>Rassemblement</span><span><i class="dot orange"></i>Incendie signalé</span><span><i class="dot red"></i>Incident</span><span><i class="dot yellow"></i>Annonce</span></div><label class="route-toggle"><input type="checkbox" id="route-toggle"><span class="toggle-track"></span>Animer une liaison illustrative du cortège <span class="info-mini" title="Interpolation entre des observations distinctes. Ce n’est pas la position réelle de la tête de cortège.">ⓘ</span></label><p class="map-note" id="map-note">Positions approximatives · Les marqueurs conservent l’historique, pas un état en direct.</p></div>
+      <div id="route-notice" hidden>TRAJET ILLUSTRATIF · INTERPOLATION, PAS DE SUIVI GPS</div>
+      <aside class="detail" id="detail" aria-label="Détail de l’événement sélectionné" hidden></aside>
+      <button id="mobile-events" class="mobile-events">☷ Chronologie</button>
+      <div id="empty-map" class="empty-map" hidden>Aucun signalement dans cette sélection à cette heure.<small>Cela ne permet pas de conclure à l’absence d’événements.</small></div>
+    </section>
+    <section class="timeline" aria-label="Lecture chronologique">
+      <div class="playback"><button id="play-button" class="play-button" aria-label="Lire la journée"><span id="play-icon">▶</span></button><div><p class="eyebrow">HEURE DE PARIS</p><output id="current-time">18<span>:</span>26</output></div><select id="speed" aria-label="Vitesse de lecture"><option value="60">×60</option><option value="300" selected>×300</option><option value="900">×900</option></select></div>
+      <div class="timeline-main"><div class="timeline-top"><span>REJOUER LA JOURNÉE</span><span id="timeline-caption">Dernier point de la source : 18:26</span></div><div class="scrubber"><div class="timeline-track"></div><div id="timeline-ticks"></div><input id="time-slider" aria-label="Heure de relecture" type="range" min="540" max="1106" step="1" value="1106"><div id="time-thumb"></div></div><div class="time-labels"><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span><span>17:00</span><span>18:26</span></div></div>
+      <button id="latest-button" class="latest-button"><span>↦</span> Dernier point</button>
+    </section>
+  </main>
+  <dialog id="method-dialog"><div class="dialog-top"><span class="eyebrow">LIRE LA CARTE</span><button id="close-method" aria-label="Fermer les informations">✕</button></div><h2>Des faits situés.<br>Des limites visibles.</h2><p>Cette édition rassemble dix faits et annonces issus de cinq sources. Elle est arrêtée au dernier point de source consulté à <b>18:26 le 17 octobre 2026</b>. La collecte est ponctuelle : ce site n’est pas un flux en direct.</p><div class="method-grid"><div><b>01 / Le temps</b><p>L’heure affichée est celle du point de direct, sauf horaire annoncé explicite. L’heure réelle de début est souvent inconnue. Les points restent dans l’historique.</p></div><div><b>02 / Les lieux</b><p>Les coordonnées représentent une place, une rue ou un secteur. Elles ne localisent pas précisément un véhicule, une personne ou un départ de feu.</p></div><div><b>03 / L’animation</b><p>Feu et fumée illustrent brièvement un signalement au passage de la frise. Leur durée à l’écran ne représente pas la durée réelle de l’incendie. L’extinction est inconnue, sauf indication explicite.</p></div><div><b>04 / Les cortèges</b><p>L’animation facultative relie des observations distinctes par un trajet schématique. Elle n’établit ni l’itinéraire exact ni la position de la tête d’un cortège.</p></div></div><h3>Couverture des sources</h3><p>Reuters via Boursorama, Sud Radio, AP et Le Monde ont fourni des observations. Une annonce participative complète la couverture de l’Essonne. Certains accès directs échouent selon la requête. BFMTV, CNews et X n’ont pas fourni de contenu directement vérifiable dans cette collecte. Aucune lecture de leurs vidéos ou de leurs flux en continu n’est revendiquée.</p><p>Aucun blocage francilien suffisamment situé et confirmé n’a été retenu dans cette collecte. Ce manque de données ne signifie pas qu’il n’y en a pas eu.</p><h3>Pour une actualisation automatique</h3><p>Il faut un service de collecte côté serveur, des accès autorisés aux flux des médias et, si nécessaire, à l’API X, une base de données horodatée, un rapprochement des doublons et une validation des localisations et corrections. Une tâche planifiée pourrait alors actualiser le dossier et sa date de collecte. Aucun accès payant ni abonnement n’est activé dans cette version.</p><p class="credits">Fond : <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> / OpenStreetMap. Bâtiments : emprises cartographiques ; hauteurs de repli lorsqu’elles manquent. Direction visuelle illustrative.</p></dialog>
+  <div id="toast" role="status" hidden></div>
+</body>
+</html>
